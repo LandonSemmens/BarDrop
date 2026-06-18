@@ -1,0 +1,6 @@
+{
+  "name": "Workout Tracker",
+  "description": "Mobile-first, offline-ready workout tracking Progressive Web App with Firebase integration and real-time social feed.",
+  "requestFramePermissions": ["screen-wake-lock"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
