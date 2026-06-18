@@ -33,13 +33,14 @@ export default function Routines({ setTab }: { setTab?: (t: string) => void }) {
   const [showMenu, setShowMenu] = useState<string | null>(null);
 
   useEffect(() => {
-    // Ensure we dynamically target the active authenticated session or fall back to the preview container user ID
-    const currentUserId = currentUser?.uid || "preview_user_77";
+    // Ensure we dynamically target the active authenticated session
+    const currentUserId = currentUser?.uid;
 
     if (!currentUserId) {
       console.warn(
         "No active user found to bind routine sub-collection query listener.",
       );
+      setRoutines([]);
       return;
     }
 
@@ -94,7 +95,9 @@ export default function Routines({ setTab }: { setTab?: (t: string) => void }) {
 
     // 3. Fire the database write in the background asynchronously
     try {
-      const currentUserId = currentUser?.uid || "preview_user_77";
+      const currentUserId = currentUser?.uid;
+      if (!currentUserId) return;
+      
       const routinesRef = collection(db, "users", currentUserId, "routines");
       
       await addDoc(routinesRef, {
@@ -117,7 +120,8 @@ export default function Routines({ setTab }: { setTab?: (t: string) => void }) {
     setRoutines(prev => prev.map(item => item.id === routineInputData.id ? { ...item, ...routineInputData, title: routineInputData.name || routineInputData.title } : item));
 
     try {
-      const currentUserId = currentUser?.uid || "preview_user_77";
+      const currentUserId = currentUser?.uid;
+      if (!currentUserId) return;
       const { id, isNew, ...updateData } = routineInputData;
       await setDoc(doc(db, "users", currentUserId, "routines", id), {
         title: updateData.name || updateData.title,
@@ -139,7 +143,8 @@ export default function Routines({ setTab }: { setTab?: (t: string) => void }) {
 
     // 2. Execute background database cleanup without blocking the user thread
     try {
-      const currentUserId = currentUser?.uid || "preview_user_77";
+      const currentUserId = currentUser?.uid;
+      if (!currentUserId) return;
       await deleteDoc(doc(db, "users", currentUserId, "routines", routineId));
       console.log("Background deletion verified on server.");
     } catch (error) {

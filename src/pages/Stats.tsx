@@ -102,10 +102,6 @@ function ProgressionChart({
     ctx.clearRect(0, 0, width, height);
 
     if (chartData.length < 2) {
-      ctx.fillStyle = "#9ca3af";
-      ctx.font = "14px Inter, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("Needs more workouts", width / 2, height / 2);
       return;
     }
 
@@ -210,24 +206,34 @@ function ProgressionChart({
           </button>
         ))}
       </div>
-      <div className="relative p-4 pb-2">
-        <canvas
-          ref={canvasRef}
-          width={340}
-          height={160}
-          className="w-full h-[160px] cursor-pointer touch-none"
-          onPointerDown={handlePointerDown}
-        />
-        {tooltip && (
-          <div
-            className="absolute bg-gray-800 text-white border border-gray-700 shadow-xl rounded-lg px-3 py-2 text-xs font-mono z-10 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-2 flex flex-col items-center gap-1 animate-in fade-in"
-            style={{ left: tooltip.x + 16, top: tooltip.y + 16 }}
-          >
-            <span className="font-bold text-gray-400 font-sans">
-              {tooltip.date}
-            </span>
-            <span className="text-blue-400">{tooltip.text}</span>
+      <div className="relative w-full aspect-[2/1] lg:aspect-[16/9] lg:max-w-3xl lg:mx-auto max-h-64 lg:max-h-80 p-4 pb-2">
+        {chartData.length < 2 ? (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center">
+            <p className="text-base font-medium tracking-normal text-gray-400 normal-case select-none">
+              Needs more workouts
+            </p>
           </div>
+        ) : (
+          <>
+            <canvas
+              ref={canvasRef}
+              width={340}
+              height={160}
+              className="w-full h-full object-contain cursor-pointer touch-none"
+              onPointerDown={handlePointerDown}
+            />
+            {tooltip && (
+              <div
+                className="absolute bg-gray-800 text-white border border-gray-700 shadow-xl rounded-lg px-3 py-2 text-xs font-mono z-10 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-2 flex flex-col items-center gap-1 animate-in fade-in"
+                style={{ left: tooltip.x + 16, top: tooltip.y + 16 }}
+              >
+                <span className="font-bold text-gray-400 font-sans">
+                  {tooltip.date}
+                </span>
+                <span className="text-blue-400">{tooltip.text}</span>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -962,7 +968,8 @@ export default function Stats() {
               {layoutOrder.map((sectionId, index) => {
                 return (
                   <Draggable
-                    {...{ key: sectionId } as any}
+                    // @ts-expect-error - key is a valid React prop
+                    key={sectionId}
                     draggableId={sectionId}
                     index={index}
                     isDragDisabled={!reorderMode}

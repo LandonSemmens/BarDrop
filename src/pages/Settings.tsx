@@ -42,26 +42,13 @@ export default function Settings() {
     setAuthLoading(true);
     try {
       setUser(null);
-      localStorage.removeItem("preview_user");
       await signOut(auth);
-      console.log("Mock preview session successfully flushed.");
+      console.log("Session successfully flushed.");
     } catch (e) {
       console.error("Sign out execution block exception:", e);
     } finally {
       setAuthLoading(false);
     }
-  };
-
-  const MOCK_PREVIEW_USER = {
-    uid: "preview_user_77",
-    displayName: "Landon Semmens (Preview)",
-    email: "preview@example.com",
-    photoURL: "https://api.dicebear.com/7.x/pixel-art/svg?seed=Landon",
-    emailVerified: true,
-  };
-
-  const handlePreviewLogin = () => {
-    setUser(MOCK_PREVIEW_USER as any);
   };
 
   const handleExport = async () => {
@@ -173,17 +160,17 @@ export default function Settings() {
               </div>
             ) : (
               <div className="p-4 flex flex-col items-stretch gap-4">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div>
+                <div className="flex flex-col items-center justify-between gap-4">
+                  <div className="text-center sm:text-left">
                     <p className="font-medium text-white">Sign In to BarDrop</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 mt-1">
                       Sync workouts across devices and engage socially.
                     </p>
                   </div>
                   <button
                     onClick={handleLogin}
                     disabled={authLoading}
-                    className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-colors whitespace-nowrap flex items-center justify-center gap-2"
+                    className="w-full px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-colors whitespace-nowrap flex items-center justify-center gap-2"
                   >
                     {authLoading ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -193,21 +180,15 @@ export default function Settings() {
                     Google Login
                   </button>
                 </div>
-                <button
-                  onClick={handlePreviewLogin}
-                  disabled={authLoading}
-                  className="w-full px-6 py-2.5 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2 mt-2"
-                >
-                  <LogIn className="w-5 h-5" />
-                  Sign In with Test Account (Preview Mode)
-                </button>
               </div>
             )}
           </div>
         </section>
 
-        {/* Preferences */}
-        <section>
+        {user && (
+          <>
+            {/* Preferences */}
+            <section>
           <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-2">
             Preferences
           </h2>
@@ -519,6 +500,8 @@ export default function Settings() {
             </button>
           </div>
         </section>
+          </>
+        )}
       </div>
 
       {showResetDialog && (
